@@ -1,6 +1,7 @@
 ﻿using LojaProdutosCurso.Data;
 using LojaProdutosCurso.DTO.Produto;
 using LojaProdutosCurso.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LojaProdutosCurso.Services.Produto
@@ -13,6 +14,24 @@ namespace LojaProdutosCurso.Services.Produto
         {
             _context = context;
             _sistema = sistema.WebRootPath;
+        }
+
+        public async Task<List<ProdutoModel>> BuscarProdutoFiltro(string? pesquisar)
+        {
+            try
+            {
+                var produtos = await _context.Produtos
+                    .Include(x => x.Categoria)
+                    .Where(p => p.Nome.ToLower().Contains(pesquisar.ToLower()) || p.Marca.ToLower().Contains(pesquisar.ToLower()))
+                    .ToListAsync();
+
+                return produtos;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<ProdutoModel> BuscarProdutoPorId(int id)
@@ -69,6 +88,8 @@ namespace LojaProdutosCurso.Services.Produto
             }
         }
 
+ 
+
         public async Task<ProdutoModel> Editar(EditarProdutoDTO editarProdutoDTO, IFormFile? foto)
         {
             try
@@ -102,6 +123,22 @@ namespace LojaProdutosCurso.Services.Produto
             }
             catch (Exception ex)
             {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ProdutoModel> Remover(int id)
+        {
+            try
+            {
+                var produto = await BuscarProdutoPorId(id);
+                _context.Produtos.Remove(produto);
+                await _context.SaveChangesAsync();
+                return produto;
+            }
+            catch (Exception ex)
+            {
+
                 throw new Exception(ex.Message);
             }
         }

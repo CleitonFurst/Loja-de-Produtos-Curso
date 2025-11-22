@@ -28,6 +28,17 @@ namespace LojaProdutosCurso.Controllers
 
             return View();
         }
+        public async Task<IActionResult> Remover(int id)
+        {
+           var poroduto =  await _produtoInterface.Remover(id);
+           return RedirectToAction("Index", "Produto");
+        }
+
+        public async Task<IActionResult> Detalhes(int id)
+        {
+            var produto = await _produtoInterface.BuscarProdutoPorId(id);
+            return View(produto);
+        }
 
         public async Task<IActionResult> Editar(int id)
         {
@@ -54,11 +65,15 @@ namespace LojaProdutosCurso.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _produtoInterface.Cadastrar(criaProdutoDTO, foto);
+                var produto =  await _produtoInterface.Cadastrar(criaProdutoDTO, foto);
+                //sucesso
+                TempData["MensagemSucesso"] = $"Produto {produto.Nome} cadastrado com sucesso";
                 return RedirectToAction("Index", "Produto");
             }
             else
             {
+                //error
+                TempData["MensagemErro"] = $"Não foi possível cadastrar o produto {criaProdutoDTO.Nome}";
                 ViewBag.Categorias = await _categoriaInterface.BuscarCategorias();
                 return View(criaProdutoDTO);
             }        
@@ -70,10 +85,12 @@ namespace LojaProdutosCurso.Controllers
             if (ModelState.IsValid)
             {
                var produto = await _produtoInterface.Editar(editarProdutoDTO, foto);
-               return RedirectToAction("Index", "Produto");
+                TempData["MensagemSucesso"] = $"Produto {produto.Nome} editado com sucesso";
+                return RedirectToAction("Index", "Produto");
             }
             else
             {
+                TempData["MensagemErro"] = $"Não foi possível editar o produto {editarProdutoDTO.Nome}";
                 ViewBag.Categorias = await _categoriaInterface.BuscarCategorias();
                 return View(editarProdutoDTO);
             }
