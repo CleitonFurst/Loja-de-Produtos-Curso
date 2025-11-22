@@ -1,4 +1,5 @@
-﻿using LojaProdutosCurso.Services.Estoque;
+﻿using ClosedXML.Excel;
+using LojaProdutosCurso.Services.Estoque;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
@@ -25,6 +26,20 @@ namespace LojaProdutosCurso.Controllers
             var dados = BusacaDados();
 
             //Retornar o arquivo
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+                workbook.Worksheets.Add(dados, "Dados Vendas");
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Relatorio_Vendas_Produtos.xlsx");
+                }
+            }
         }
         private DataTable BusacaDados()
         {
