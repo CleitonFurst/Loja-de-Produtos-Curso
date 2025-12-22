@@ -1,4 +1,6 @@
-﻿namespace LojaProdutosCurso.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace LojaProdutosCurso.Models
 {
     public class EnderecoModel
     {
@@ -10,5 +12,8 @@
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public string? Complemento { get; set; }
+        public int UsuarioModelId { get; set; }
+        [ValidateNever]
+        public UsuarioModel Usuario { get; set; }
     }
 }

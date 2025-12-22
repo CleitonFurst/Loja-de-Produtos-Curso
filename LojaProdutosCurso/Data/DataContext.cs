@@ -13,7 +13,8 @@ namespace LojaProdutosCurso.Data
         public DbSet<ProdutoModel> Produtos { get; set; }
         public DbSet<CategoriaModel> Categorias { get; set; }
         public DbSet<ProdutosBaixadosModel> ProdutosBaixados { get; set; }
-
+        public DbSet<UsuarioModel> Usuarios { get; set; }
+        public DbSet<EnderecoModel> Enderecos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CategoriaModel>().HasData(

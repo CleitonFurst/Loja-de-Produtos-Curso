@@ -1,0 +1,43 @@
+﻿@using LojaProdutosCurso.Models
+@model List<UsuarioModel>
+
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Listagem de Usuários</h2>
+        <a asp-controller="Usuario" asp-action="Cadastrar" class="btn btn-success">Cadastrar novo usuário</a>
+    </div>
+    <table class="table table-hover table-bordered" id="registros">
+        <thead class="table-dark">
+            <tr>
+                <th>Cargo</th>
+                <th>Nome</th>
+                <th>Estado</th>
+                <th>E-mail</th>
+                <th>Data de criação</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if(Model != null && Model.Count > 0)
+            {
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.Cargo</td>
+                        <td>@usuario.Nome</td>
+                        <td>@usuario.Endereco.Estado</td>
+                        <td>@usuario.Email</td>
+                        <td>@usuario.DataCadastro.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <a asp-controller="Usuario" asp-action="Editar" asp-route-id="@usuario.Id" class="btn btn-sm btn-info"><i class="bi bi-pencil"></i>Editar</a>
+                            <a asp-controller="Usuario" asp-action="Excluir" asp-route-id="@usuario.Id" class="btn btn-sm btn-danger"><i class="bi bi-x-square"></i>Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

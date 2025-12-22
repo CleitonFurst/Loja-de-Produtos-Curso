@@ -13,8 +13,7 @@ namespace LojaProdutosCurso.Models
         public byte[] SenhaSalt { get; set; }
         public CargoEnum Cargo { get; set; }
         public DateTime DataCadastro { get; set; }
-        public DateTime DataAlteracao { get; set; }
-        public int EnderecoModelId { get; set; }
+        public DateTime DataAlteracao { get; set; }       
 
         [ValidateNever]
         public EnderecoModel Endereco { get; set; }
