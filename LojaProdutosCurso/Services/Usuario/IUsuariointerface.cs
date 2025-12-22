@@ -1,4 +1,5 @@
-﻿using LojaProdutosCurso.Models;
+﻿using LojaProdutosCurso.DTO.Usuario;
+using LojaProdutosCurso.Models;
 
 namespace LojaProdutosCurso.Services.Usuario
 {
@@ -6,5 +7,7 @@ namespace LojaProdutosCurso.Services.Usuario
     {
         Task<List<UsuarioModel>> BuscarUsuarios();
         Task<UsuarioModel> BuscarUsuarioPorId(int id);
+        Task<bool> VerifcaSeExisteEmail(CriarUsuarioDTO criarUsuarioDTO);
+        Task<CriarUsuarioDTO> CadastrarUsuario(CriarUsuarioDTO criarUsuarioDTO);
     }
 }

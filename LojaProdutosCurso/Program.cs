@@ -1,4 +1,5 @@
 using LojaProdutosCurso.Data;
+using LojaProdutosCurso.Services.Autenticacao;
 using LojaProdutosCurso.Services.Categoria;
 using LojaProdutosCurso.Services.Estoque;
 using LojaProdutosCurso.Services.Produto;
@@ -19,6 +20,7 @@ builder.Services.AddScoped<IProdutoInterface, ProdutoService>();
 builder.Services.AddScoped<ICategoriaInterface, CategoriaService>();
 builder.Services.AddScoped<IEstoqueInterface, EstoqueService>();
 builder.Services.AddScoped<IUsuariointerface, UsuarioService>();
+builder.Services.AddScoped<IAutenticacaoInterface, AutententicacaoServices>();
 
 var app = builder.Build();
 

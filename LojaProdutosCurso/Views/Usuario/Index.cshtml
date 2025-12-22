@@ -20,9 +20,17 @@
             </tr>
         </thead>
         <tbody>
-
+            @if (Model == null)
+            {
+                <p>Model está nulo</p>
+            }
+            else
+            {
+                <p>Quantidade de usuários: @Model.Count</p>
+            }
             @if(Model != null && Model.Count > 0)
             {
+
                 @foreach (var usuario in Model)
                 {
                     <tr>

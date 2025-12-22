@@ -13,12 +13,13 @@
             <input type="email" class="form-control shadow-none" asp-for="Email"/>
         </div>
         <div class="mb-1">
-            <label class="form-label">Nome Completo:</label>
+            <label class="form-label">Cargo:</label>
             <select class="form-select shadow-none" asp-for="Cargo">
-                <option value="Administrador">Administrador</option>
                 <option value="Cliente">Cliente</option>
+                <option value="Administrador">Administrador</option>                
             </select>
         </div>
+     
         <div class="col-12 d-flex gap-1 w-100">
             <div class="mb-1 col-6">
                 <label class="form-label">CEP:</label>
@@ -39,8 +40,12 @@
                 <input type="text" class="form-control shadow-none" asp-for="Numero" />
             </div>
         </div>
-
+        <div class="mb-1">
+            <label class="form-label">Cidade:</label>
+            <input type="text" class="form-control shadow-none" id="input-cidade" asp-for="Cidade" />
+        </div>
         <div class="col-12 d-flex gap-1 w-100">
+          
             <div class="mb-1 col-6">
                 <label class="form-label">Bairro:</label>
                 <input type="text" class="form-control shadow-none" id="input-bairro" asp-for="Bairro" />
@@ -64,3 +69,29 @@
         </div>
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+<script>
+    var inputLogradouro = document.querySelector('#input-logradouro');
+    var inputBairro = document.querySelector('#input-bairro');
+    var inputEstado = document.querySelector('#input-estado');
+    var inputComplemento = document.querySelector('#input-complemento');
+
+    $('#input-cep').focusout(async function(e){
+        var target = e.target;
+        var value = target.value;
+
+        var url = `https://viacep.com.br/ws/${value}/json/`
+
+        var resposta = await fetch(url);
+        var dados = await resposta.json();
+
+        inputLogradouro.value = dados.logradouro;
+        inputBairro.value = dados.bairro;
+        inputEstado.value = dados.uf;
+        inputComplemento.value = dados.complemento
+        inputComplemento.value = dados.complemento
+  
+    });
+</script>
