@@ -1,4 +1,6 @@
-﻿using LojaProdutosCurso.DTO.Usuario;
+﻿using AutoMapper;
+using LojaProdutosCurso.DTO.Endereco;
+using LojaProdutosCurso.DTO.Usuario;
 using LojaProdutosCurso.Services.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -9,10 +11,12 @@ namespace LojaProdutosCurso.Controllers
     public class UsuarioController : Controller
     {
         private readonly IUsuariointerface _usuarioInterface;
+        private readonly IMapper _mapper;
 
-        public UsuarioController(IUsuariointerface usuarioInterface)
+        public UsuarioController(IUsuariointerface usuarioInterface, IMapper mapper)
         {
             _usuarioInterface = usuarioInterface;
+            this._mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
@@ -25,6 +29,22 @@ namespace LojaProdutosCurso.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> Editar(int id)
+        {
+            var usuario = await _usuarioInterface.BuscarUsuarioPorId(id);
+            var usuarioEditado = new EditarUsuarioDTO()
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Cargo = usuario.Cargo,
+                Endereco = _mapper.Map<EditarEnderecoDTO>(usuario.Endereco)
+            };
+
+            return View(usuarioEditado);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Cadastrar(CriarUsuarioDTO criarUsuarioDTO)
         {

@@ -5,7 +5,8 @@ using LojaProdutosCurso.Services.Estoque;
 using LojaProdutosCurso.Services.Produto;
 using LojaProdutosCurso.Services.Usuario;
 using Microsoft.EntityFrameworkCore;
-using System;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddScoped<ICategoriaInterface, CategoriaService>();
 builder.Services.AddScoped<IEstoqueInterface, EstoqueService>();
 builder.Services.AddScoped<IUsuariointerface, UsuarioService>();
 builder.Services.AddScoped<IAutenticacaoInterface, AutententicacaoServices>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
