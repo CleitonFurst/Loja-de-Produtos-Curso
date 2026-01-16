@@ -1,7 +1,10 @@
-﻿using LojaProdutosCurso.Data;
+﻿using AutoMapper;
+using LojaProdutosCurso.Data;
+using LojaProdutosCurso.DTO.Login;
 using LojaProdutosCurso.DTO.Usuario;
 using LojaProdutosCurso.Models;
 using LojaProdutosCurso.Services.Autenticacao;
+using LojaProdutosCurso.Services.Sessao;
 using Microsoft.EntityFrameworkCore;
 
 namespace LojaProdutosCurso.Services.Usuario
@@ -10,11 +13,15 @@ namespace LojaProdutosCurso.Services.Usuario
     {
         private readonly DataContext _context;
         private readonly IAutenticacaoInterface _autenticacaoInterface;
+        private readonly IMapper _mapper;
+        private readonly ISessaoInterface _sessaoInterface;
 
-        public UsuarioService(DataContext context, IAutenticacaoInterface autenticacaoInterface)
+        public UsuarioService(DataContext context, IAutenticacaoInterface autenticacaoInterface, IMapper mapper, ISessaoInterface sessaoInterface)
         {
             _context = context;
             _autenticacaoInterface = autenticacaoInterface;
+            _mapper = mapper;
+            _sessaoInterface = sessaoInterface;
         }
         public async Task<List<UsuarioModel>> BuscarUsuarios()
         {
@@ -98,6 +105,69 @@ namespace LojaProdutosCurso.Services.Usuario
             catch (Exception ex)
             {
 
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<UsuarioModel> Excluir(int id)
+        {
+            try
+            {
+                var usuario = await BuscarUsuarioPorId(id);
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<UsuarioModel> Editar(EditarUsuarioDTO editarUsuarioDTO)
+        {
+            try
+            {
+                var usuarioBanco = await _context.Usuarios.Include(u => u.Endereco).FirstOrDefaultAsync(u => u.Id == editarUsuarioDTO.Id);
+
+                usuarioBanco.Nome = editarUsuarioDTO.Nome;
+                usuarioBanco.Email = editarUsuarioDTO.Email;
+                usuarioBanco.Cargo = editarUsuarioDTO.Cargo;
+                usuarioBanco.DataAlteracao = DateTime.Now;
+                usuarioBanco.Endereco = _mapper.Map<EnderecoModel>(editarUsuarioDTO.Endereco);
+
+                _context.Update(usuarioBanco);
+                await _context.SaveChangesAsync();
+
+                return usuarioBanco;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<UsuarioModel> Login(LoginUsuarioDTO loginUsuarioDTO)
+        {
+            try
+            {
+                var usuarioBanco = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == loginUsuarioDTO.Email);//verifica se o email existe no banco, se não existir retorna null
+
+                if (usuarioBanco == null)
+                {
+                    throw null;
+                }
+                if(!_autenticacaoInterface.verificaLogin(loginUsuarioDTO.Senha, usuarioBanco.SenhaHash, usuarioBanco.SenhaSalt))//verifica se a senha digitada é igual a senha do banco, se não for retorna null
+                { 
+                    return null;
+                }
+                _sessaoInterface.CriarSessao(usuarioBanco);
+                return usuarioBanco;
+
+            }
+            catch (Exception ex)
+            {
                 throw new Exception(ex.Message);
             }
         }

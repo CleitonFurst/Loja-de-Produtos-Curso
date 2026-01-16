@@ -1,50 +1,339 @@
 ﻿@using LojaProdutosCurso.Models
+@using System.Globalization
 @model List<ProdutoModel>
 
+@{
+    ViewData["Title"] = "Produtos - Loja";
+    var produtosEmEstoque = Model?.Where(x => x.QuantidadeEstoque > 0).ToList();
+    var termoPesquisa = Context.Request.Query["pesquisar"].ToString();
+}
+
+<!-- Mensagens de Feedback -->
 @if (TempData["MensagemSucesso"] != null)
 {
-    <div class="alert alert-success text-dark" role="alert">
-        @TempData["MensagemSucesso"]
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Sucesso!</strong> @TempData["MensagemSucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
     </div>
 }
 
 @if (TempData["MensagemErro"] != null)
 {
-    <div class="alert alert-danger text-dark" role="alert">
-        @TempData["MensagemErro"]
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Erro!</strong> @TempData["MensagemErro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
     </div>
 }
-<div class="container mt-5">
-    <div class="text-center mb-5">
-        <form method="get" asp-action="Index" asp-controller="Home" class="d-flex justify-content-center" >
-            <input name="pesquisar" class="form-control w-50 mx-3" style="border: 1px solid black;"  />
-            <button class="btn btn-primary btn w-10"><i class="bi bi-search mx-2"></i> Pesquisar</button>
-        </form>
-    </div>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
-        @if(Model != null)
-        {
-            @if(Model.Where(x => x.QuantidadeEstoque > 0).Count() > 0)
-            {
-                @foreach(var produto in Model.Where(x => x.QuantidadeEstoque > 0))
-                {
-                    <div class="card" style="width: 15rem; margin-left: 20px; margin-bottom: 20px;">
-                        <h5 class="card-title position-absolute"
-                            style="background-color: #772953; width: 100px; height: 30px; color: white; border-bottom-right-radius: 10px; padding-left: 10px;">
-                            @produto.Categoria.Nome
-                        </h5>
-                        <img src="/imagem/@produto.Foto" class="card-img-top car" style="width: 100%; height: 250px;"/>
-                        <div class="accordion-body text-center mb-3">
-                            <h5 class="card-title>">@produto.Nome</h5>
-                            <h5 class="card-title">@produto.Marca</h5>
-                            <h5 class="card-title"><b>R$ @produto.Valor.ToString("F")</b></h5>
 
-                            <a class="btn btn-info w-75" style="font-size:16px" asp-Action="Detalhes" asp-controller="Produto" asp-route-id="@produto.Id"><i class="bi bi-newspaper mx-2"></i>Detalhes</a>
+<!-- Carousel de Banners -->
+<section class="hero-carousel mb-5">
+    <div id="carouselBanners" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselBanners" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Banner 1"></button>
+            <button type="button" data-bs-target="#carouselBanners" data-bs-slide-to="1" aria-label="Banner 2"></button>
+            <button type="button" data-bs-target="#carouselBanners" data-bs-slide-to="2" aria-label="Banner 3"></button>
+        </div>
+
+        <div class="carousel-inner">
+            <!-- Banner 1 -->
+            <div class="carousel-item active">
+                <div class="banner-slide banner-1">
+                    <div class="banner-overlay"></div>
+                    <div class="container">
+                        <div class="banner-content">
+                            <h1 class="display-3 fw-bold animate-slide-up">Bem-vindo à Nossa Loja</h1>
+                            <p class="lead mb-4 animate-slide-up animation-delay-1">Descubra produtos incríveis com os melhores preços</p>
+                            <a href="#produtos" class="btn btn-primary btn-lg shadow animate-slide-up animation-delay-2">
+                                <i class="bi bi-cart-plus me-2"></i>Comprar Agora
+                            </a>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner 2 -->
+            <div class="carousel-item">
+                <div class="banner-slide banner-2">
+                    <div class="banner-overlay"></div>
+                    <div class="container">
+                        <div class="banner-content">
+                            <h1 class="display-3 fw-bold animate-slide-up">Promoções Especiais</h1>
+                            <p class="lead mb-4 animate-slide-up animation-delay-1">Até 50% de desconto em produtos selecionados</p>
+                            <a href="#produtos" class="btn btn-warning btn-lg shadow animate-slide-up animation-delay-2">
+                                <i class="bi bi-tag-fill me-2"></i>Ver Ofertas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner 3 -->
+            <div class="carousel-item">
+                <div class="banner-slide banner-3">
+                    <div class="banner-overlay"></div>
+                    <div class="container">
+                        <div class="banner-content">
+                            <h1 class="display-3 fw-bold animate-slide-up">Frete Grátis</h1>
+                            <p class="lead mb-4 animate-slide-up animation-delay-1">Em compras acima de R$ 199,00 para todo o Brasil</p>
+                            <a href="#produtos" class="btn btn-success btn-lg shadow animate-slide-up animation-delay-2">
+                                <i class="bi bi-truck me-2"></i>Aproveitar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles do Carousel -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselBanners" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselBanners" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Barra de Pesquisa e Filtros -->
+    <section class="search-section mb-5" id="produtos">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="search-wrapper">
+                    <h2 class="text-center mb-4 section-title">
+                        <i class="bi bi-shop me-2"></i>Nossos Produtos
+                    </h2>
+
+                    <form method="get" asp-action="Index" asp-controller="Home" class="search-form">
+                        <div class="input-group input-group-lg shadow-sm">
+                            <label for="pesquisar" class="visually-hidden">Pesquisar produtos</label>
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input id="pesquisar"
+                                   name="pesquisar"
+                                   type="search"
+                                   class="form-control border-start-0 ps-0"
+                                   placeholder="O que você está procurando?"
+                                   aria-label="Campo de pesquisa de produtos"
+                                   value="@termoPesquisa" />
+                            <button class="btn btn-primary px-4" type="submit">
+                                Buscar
+                            </button>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(termoPesquisa))
+                        {
+                            <div class="mt-3 text-center">
+                                <span class="badge bg-secondary py-2 px-3">
+                                    Buscando por: "@termoPesquisa"
+                                    <a asp-action="Index" asp-controller="Home" class="text-white text-decoration-none ms-2">
+                                        <i class="bi bi-x-circle"></i>
+                                    </a>
+                                </span>
+                            </div>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estatísticas -->
+    @if (produtosEmEstoque?.Any() == true)
+    {
+        <section class="stats-section mb-5">
+            <div class="row g-4 text-center">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="bi bi-box-seam stat-icon"></i>
+                        <h3 class="stat-number">@produtosEmEstoque.Count</h3>
+                        <p class="stat-label">Produtos</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="bi bi-tags stat-icon"></i>
+                        <h3 class="stat-number">@produtosEmEstoque.Select(p => p.Categoria.Nome).Distinct().Count()</h3>
+                        <p class="stat-label">Categorias</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="bi bi-truck stat-icon"></i>
+                        <h3 class="stat-number">Grátis</h3>
+                        <p class="stat-label">Frete</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <i class="bi bi-shield-check stat-icon"></i>
+                        <h3 class="stat-number">100%</h3>
+                        <p class="stat-label">Seguro</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- Grid de Produtos -->
+    <section class="produtos-section mb-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @if (produtosEmEstoque?.Any() == true)
+            {
+                @foreach (var produto in produtosEmEstoque)
+                {
+                    <div class="col">
+                        <article class="produto-card card h-100 border-0 shadow-sm">
+                            <!-- Badge de Categoria -->
+                            <span class="categoria-badge position-absolute" title="Categoria: @produto.Categoria.Nome">
+                                <i class="bi bi-tag-fill me-1"></i>@produto.Categoria.Nome
+                            </span>
+
+                            <!-- Badge de Estoque -->
+                            @if (produto.QuantidadeEstoque < 10)
+                            {
+                                <span class="estoque-badge position-absolute" title="Últimas unidades">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i>Últimas unidades
+                                </span>
+                            }
+
+                            <!-- Imagem do Produto -->
+                            <div class="produto-image-wrapper">
+                                <img src="/imagem/@produto.Foto"
+                                     class="card-img-top produto-imagem"
+                                     alt="@produto.Nome - @produto.Marca"
+                                     loading="lazy"
+                                     onerror="this.src='/imagens/produto-sem-imagem.png'" />
+                                <div class="produto-overlay">
+                                    <a class="btn btn-light btn-sm rounded-circle quick-view"
+                                       asp-action="Detalhes"
+                                       asp-controller="Produto"
+                                       asp-route-id="@produto.Id"
+                                       title="Visualização rápida">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Corpo do Card -->
+                            <div class="card-body d-flex flex-column text-center">
+                                <h5 class="card-title produto-nome" title="@produto.Nome">@produto.Nome</h5>
+                                <p class="card-text text-muted mb-2 produto-marca">
+                                    <i class="bi bi-award me-1"></i>@produto.Marca
+                                </p>
+
+                                <!-- Avaliação (exemplo estático) -->
+                                <div class="rating mb-2">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
+                                    <span class="text-muted small ms-1">(4.5)</span>
+                                </div>
+
+                                <!-- Preço -->
+                                <div class="produto-preco mb-3 mt-auto">
+                                    <span class="preco-atual fs-4 fw-bold text-success">
+                                        @produto.Valor.ToString("C", CultureInfo.GetCultureInfo("pt-BR"))
+                                    </span>
+                                    <small class="text-muted d-block">ou 3x sem juros</small>
+                                </div>
+
+                                <!-- Botão de Detalhes -->
+                                <a class="btn btn-primary w-100 btn-detalhes"
+                                   asp-action="Detalhes"
+                                   asp-controller="Produto"
+                                   asp-route-id="@produto.Id"
+                                   aria-label="Ver detalhes de @produto.Nome">
+                                    <i class="bi bi-cart-plus me-2"></i>Ver Detalhes
+                                </a>
+                            </div>
+                        </article>
                     </div>
                 }
             }
-        }
+            else
+            {
+                <div class="col-12">
+                    <div class="empty-state text-center py-5">
+                        <div class="empty-state-icon mb-4">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                        </div>
+                        <h3 class="mb-3">Nenhum produto encontrado</h3>
+                        <p class="text-muted mb-4">
+                            @if (!string.IsNullOrEmpty(termoPesquisa))
+                            {
+                                <text>Não encontramos produtos com o termo "<strong>@termoPesquisa</strong>".</text>
+                                <br />
+                                <text>Tente buscar com outras palavras-chave.</text>
+                            }
+                            else
+                            {
+                                <text>Não há produtos disponíveis em estoque no momento.</text>
+                                <br />
+                                <text>Volte em breve para conferir novidades!</text>
+                            }
+                        </p>
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>Voltar para início
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
 
-    </div>
+    <!-- Seção de Benefícios -->
+    <section class="benefits-section mb-5 py-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="benefit-card text-center p-4">
+                    <div class="benefit-icon mb-3">
+                        <i class="bi bi-truck display-4 text-primary"></i>
+                    </div>
+                    <h4>Entrega Rápida</h4>
+                    <p class="text-muted mb-0">Receba em até 48h na sua casa</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="benefit-card text-center p-4">
+                    <div class="benefit-icon mb-3">
+                        <i class="bi bi-shield-check display-4 text-success"></i>
+                    </div>
+                    <h4>Compra Segura</h4>
+                    <p class="text-muted mb-0">Seus dados protegidos</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="benefit-card text-center p-4">
+                    <div class="benefit-icon mb-3">
+                        <i class="bi bi-arrow-repeat display-4 text-warning"></i>
+                    </div>
+                    <h4>Troca Grátis</h4>
+                    <p class="text-muted mb-0">30 dias para trocar ou devolver</p>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+@section Scripts {
+    <script>
+        // Auto-hide alerts após 5 segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
+        });
+    </script>
+}

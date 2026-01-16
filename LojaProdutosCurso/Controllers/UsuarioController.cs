@@ -1,4 +1,6 @@
-﻿using LojaProdutosCurso.DTO.Usuario;
+﻿using AutoMapper;
+using LojaProdutosCurso.DTO.Endereco;
+using LojaProdutosCurso.DTO.Usuario;
 using LojaProdutosCurso.Services.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -9,10 +11,12 @@ namespace LojaProdutosCurso.Controllers
     public class UsuarioController : Controller
     {
         private readonly IUsuariointerface _usuarioInterface;
+        private readonly IMapper _mapper;
 
-        public UsuarioController(IUsuariointerface usuarioInterface)
+        public UsuarioController(IUsuariointerface usuarioInterface, IMapper mapper)
         {
             _usuarioInterface = usuarioInterface;
+            this._mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
@@ -25,6 +29,27 @@ namespace LojaProdutosCurso.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> Editar(int id)
+        {
+            var usuario = await _usuarioInterface.BuscarUsuarioPorId(id);
+            var usuarioEditado = new EditarUsuarioDTO()
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Cargo = usuario.Cargo,
+                Endereco = _mapper.Map<EditarEnderecoDTO>(usuario.Endereco)
+            };
+
+            return View(usuarioEditado);
+        }
+        public async Task<IActionResult> Excluir(int id)
+        {
+            var usuario = await _usuarioInterface.Excluir(id);
+            return RedirectToAction("Index", "Usuario");
+        }
+
         [HttpPost]
         public async Task<IActionResult> Cadastrar(CriarUsuarioDTO criarUsuarioDTO)
         {
@@ -53,6 +78,31 @@ namespace LojaProdutosCurso.Controllers
                 TempData["MensagemErro"] = "Dados invalidos, verifique e tente novamente !";
                 return View(criarUsuarioDTO);
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Editar(EditarUsuarioDTO editarUsuarioDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var usuarioEditado = await _usuarioInterface.Editar(editarUsuarioDTO);
+                if (usuarioEditado != null)
+                {
+                    TempData["MensagemSucesso"] = "Usuário editado com sucesso !";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Houve um erro ao editar o usuário, tente novamente !";
+                    return View(editarUsuarioDTO);
+                }
+            }
+            else
+            {
+                TempData["MensagemErro"] = "Dados invalidos, verifique e tente novamente !";
+                return View(editarUsuarioDTO);
+            }
+              
         }
     }
 }

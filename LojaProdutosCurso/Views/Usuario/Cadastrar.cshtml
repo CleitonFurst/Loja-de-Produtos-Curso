@@ -23,7 +23,7 @@
         <div class="col-12 d-flex gap-1 w-100">
             <div class="mb-1 col-6">
                 <label class="form-label">CEP:</label>
-                <input type="text" class="form-control shadow-none" id="input-cep" asp-for="CEP" />
+                <input type="text" class="form-control shadow-none" id="input-cep" asp-for="CEP" maxlength="9" inputmode="numeric" />
             </div>
             <div class="mb-1 col-6">
                 <label class="form-label">Estado:</label>
@@ -73,25 +73,47 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
 <script>
+    var inputCep = document.querySelector('#input-cep');
     var inputLogradouro = document.querySelector('#input-logradouro');
     var inputBairro = document.querySelector('#input-bairro');
     var inputEstado = document.querySelector('#input-estado');
     var inputComplemento = document.querySelector('#input-complemento');
 
-    $('#input-cep').focusout(async function(e){
-        var target = e.target;
-        var value = target.value;
+    function formatCep(value) {
+        var digits = (value || '').replace(/\D/g, '').slice(0, 8);
+        if (digits.length > 5) {
+            return digits.slice(0, 5) + '-' + digits.slice(5);
+        }
+        return digits;
+    }
 
-        var url = `https://viacep.com.br/ws/${value}/json/`
+    // format while typing
+    if (inputCep) {
+        inputCep.addEventListener('input', function (e) {
+            var cursor = e.target.selectionStart;
+            e.target.value = formatCep(e.target.value);
+            // try to keep cursor at end (simple approach)
+            e.target.selectionStart = e.target.selectionEnd = e.target.value.length;
+        });
+    }
 
-        var resposta = await fetch(url);
-        var dados = await resposta.json();
+    // fetch address on blur using only digits
+    $('#input-cep').focusout(async function (e) {
+        var valueDigits = (e.target.value || '').replace(/\D/g, '');
+        if (!valueDigits) return;
+        var url = `https://viacep.com.br/ws/${valueDigits}/json/`;
+        try {
+            var resposta = await fetch(url);
+            if (!resposta.ok) return;
+            var dados = await resposta.json();
+            if (dados.erro) return;
 
-        inputLogradouro.value = dados.logradouro;
-        inputBairro.value = dados.bairro;
-        inputEstado.value = dados.uf;
-        inputComplemento.value = dados.complemento
-        inputComplemento.value = dados.complemento
-  
+            inputLogradouro.value = dados.logradouro || '';
+            inputBairro.value = dados.bairro || '';
+            inputEstado.value = dados.uf || '';
+            inputComplemento.value = dados.complemento || '';
+        } catch (err) {
+            console.error('Erro ao buscar CEP:', err);
+        }
     });
 </script>
