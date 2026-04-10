@@ -6,47 +6,101 @@
     <title>@ViewData["Title"] - LojaProdutosCurso</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Brite.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LojaProdutosCurso.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.datatables.net/v/dt/dt-2.3.4/datatables.min.css" rel="stylesheet" integrity="sha384-pmGS6IIcXhAVIhcnh9X/mxffzZNHbuxboycGuQQoP3pAbb0SwlSUUHn2v22bOenI" crossorigin="anonymous">
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LojaProdutosCurso</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+<body class="bg-light">
+    <header class="sticky-top shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-cart4 me-2 fs-3 text-primary"></i>
+                    <span>LOJA<span class="text-primary">PRO</span></span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item mx-lg-2">
+                            <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-1"></i>Início
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Produto" asp-action="Index">Produtos</a>
+                        <li class="nav-item mx-lg-2">
+                            <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Produto" ? "active" : "")" asp-area="" asp-controller="Produto" asp-action="Index">
+                                <i class="bi bi-bag me-1"></i>Gerenciar Produtos
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Estoque" asp-action="Index">Listagem Produtos</a>
+                        <li class="nav-item mx-lg-2">
+                            <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Estoque" ? "active" : "")" asp-area="" asp-controller="Estoque" asp-action="Index">
+                                <i class="bi bi-list-ul me-1"></i>Listagem Completa
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="Index">Usuários</a>
+                        <li class="nav-item mx-lg-2">
+                            <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")" asp-area="" asp-controller="Usuario" asp-action="Index">
+                                <i class="bi bi-people me-1"></i>Usuários
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="main-content">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer-modern bg-dark text-light pt-5 pb-3">
         <div class="container">
-            &copy; 2025 - LojaProdutosCurso - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold mb-4 text-primary">LOJA PRO</h5>
+                    <p class="text-muted small">Oferecemos a melhor seleção de produtos com qualidade garantida e entrega rápida em todo o Brasil. Sua satisfação é nossa prioridade.</p>
+                    <div class="social-links mt-4">
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="fw-bold mb-4">Navegação</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none hover-primary">Início</a></li>
+                        <li class="mb-2"><a asp-controller="Produto" asp-action="Index" class="text-muted text-decoration-none hover-primary">Produtos</a></li>
+                        <li class="mb-2"><a asp-controller="Estoque" asp-action="Index" class="text-muted text-decoration-none hover-primary">Estoque</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold mb-4">Suporte</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2 text-muted"><i class="bi bi-telephone me-2"></i>(11) 9999-9999</li>
+                        <li class="mb-2 text-muted"><i class="bi bi-envelope me-2"></i>suporte@lojapro.com</li>
+                        <li class="mb-2 text-muted"><i class="bi bi-geo-alt me-2"></i>São Paulo, SP</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center text-md-start">
+                    <h6 class="fw-bold mb-4">Newsletter</h6>
+                    <div class="input-group mb-3 shadow-sm">
+                        <input type="text" class="form-control bg-dark text-light border-secondary" placeholder="Seu e-mail" aria-label="E-mail">
+                        <button class="btn btn-primary px-3" type="button">OK</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-5 mb-4 border-secondary opacity-25">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small text-muted">&copy; 2025 - LojaProdutosCurso. Todos os direitos reservados.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <img src="https://img.shields.io/badge/Pagamento-Seguro-success?style=flat-square&logo=visa&logoColor=white" alt="Pagamento Seguro">
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

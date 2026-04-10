@@ -1,65 +1,108 @@
 ﻿@using LojaProdutosCurso.Models
 @model List<ProdutoModel>
 
-
-@if (TempData["MensagemSucesso"] != null)
-{
-    <div class="alert alert-success text-dark" role="alert">
-        @TempData["MensagemSucesso"]
-    </div>
+@{
+    ViewData["Title"] = "Gerenciar Produtos";
 }
 
-@if (TempData["MensagemErro"] != null)
-{
-    <div class="alert alert-danger text-dark" role="alert">
-        @TempData["MensagemErro"]
-    </div>
-}
+<div class="container py-5">
+    <!-- Breadcrumb e Título -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Início</a></li>
+            <li class="breadcrumb-item active">Produtos</li>
+        </ol>
+    </nav>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Listagem de Produtos!</h2>
-        <a class="btn btn-success" asp-action="Cadastrar" asp-controller="Produto"><i class="bi bi-plus-circle mx-2"></i>Cadastro novo podutoto</a>
-    </div >
-    <table id="registros" class="table table-hover table-bordered">
-        <thead  class="table-dark">
-            <tr>
-                <th></th>
-                <th>Nome</th>
-                <th>Marca</th>
-                <th>Categoria</th>
-                <th>Quantidade</th>
-                <th>Valor</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(Model.Count() > 0)
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-box-seam me-2 text-primary"></i>Gestão de Produtos
+                </h2>
+                <p class="text-muted small mb-0">Visualize e gerencie o catálogo de produtos da sua loja.</p>
+            </div>
+            <a class="btn btn-primary rounded-pill px-4 shadow-sm" asp-action="Cadastrar" asp-controller="Produto">
+                <i class="bi bi-plus-lg me-2"></i>Novo Produto
+            </a>
+        </div>
+        
+        <div class="card-body p-4">
+            <!-- Mensagens de Feedback -->
+            @if (TempData["MensagemSucesso"] != null)
             {
-                @foreach (var produto in Model)
-                {
-                    <tr>
-                      
-                        @if(produto.Foto != null)
-                        {
-                            <td><img src="~/imagem/@produto.Foto" width="100" height="50" /></td>
-                        }
-                        else
-                        {
-                            <td></td>
-                        }
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["MensagemSucesso"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
-                        <td>@produto.Nome</td>
-                        <td>@produto.Marca</td>
-                        <td>@produto.Categoria.Nome</td>
-                        <td>@produto.QuantidadeEstoque</td>
-                        <td>@produto.Valor.ToString("F")</td>
-                        <td>
-                            <a asp-action="Editar" asp-controller="Produto" asp-route-id="@produto.Id" class="btn btn-info"><i class="bi bi-pencil mx-2"></i>Editar</a>
-                            <a asp-action="Remover" asp-controller="Produto" asp-route-id="@produto.Id" class="btn btn-danger"><i class="bi bi-trash mx-2"></i>Excluir</a>
-                        </td>
-                    </tr>
-                }
-            }           
-    </table>
+            @if (TempData["MensagemErro"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["MensagemErro"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table id="registros" class="table table-hover align-middle">
+                    <thead class="table-light text-muted small text-uppercase">
+                        <tr>
+                            <th class="border-0 px-3">Produto</th>
+                            <th class="border-0">Marca</th>
+                            <th class="border-0">Categoria</th>
+                            <th class="border-0 text-center">Estoque</th>
+                            <th class="border-0 text-end">Preço</th>
+                            <th class="border-0 text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var produto in Model)
+                            {
+                                <tr>
+                                    <td class="px-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-3 overflow-hidden me-3 shadow-sm" style="width: 60px; height: 60px;">
+                                                <img src="~/imagem/@(string.IsNullOrEmpty(produto.Foto) ? "sem-foto.png" : produto.Foto)" 
+                                                     class="w-100 h-100 object-fit-cover" 
+                                                     alt="@produto.Nome"
+                                                     onerror="this.src='https://placehold.co/100x100?text=S/F'"/>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold d-block text-dark">@produto.Nome</span>
+                                                <small class="text-muted">ID: #@produto.Id</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-light text-dark border fw-medium">@produto.Marca</span></td>
+                                    <td>@produto.Categoria.Nome</td>
+                                    <td class="text-center">
+                                        <span class="fw-bold @(produto.QuantidadeEstoque < 10 ? "text-danger" : "text-dark")">
+                                            @produto.QuantidadeEstoque
+                                        </span>
+                                    </td>
+                                    <td class="text-end fw-bold text-success">@produto.Valor.ToString("C")</td>
+                                    <td class="text-center">
+                                        <div class="btn-group shadow-sm rounded-pill overflow-hidden">
+                                            <a asp-action="Editar" asp-controller="Produto" asp-route-id="@produto.Id" 
+                                               class="btn btn-white btn-sm px-3 border-end" title="Editar">
+                                                <i class="bi bi-pencil-square text-primary"></i>
+                                            </a>
+                                            <a asp-action="Remover" asp-controller="Produto" asp-route-id="@produto.Id" 
+                                               class="btn btn-white btn-sm px-3" title="Excluir">
+                                                <i class="bi bi-trash3 text-danger"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

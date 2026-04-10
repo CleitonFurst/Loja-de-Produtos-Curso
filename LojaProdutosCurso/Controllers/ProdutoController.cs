@@ -1,10 +1,13 @@
 ﻿using LojaProdutosCurso.DTO.Produto;
+using LojaProdutosCurso.Filtros;
 using LojaProdutosCurso.Services.Categoria;
 using LojaProdutosCurso.Services.Produto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LojaProdutosCurso.Controllers
 {
+    [UsuarioLogado]
+    
     public class ProdutoController : Controller
     {
         private readonly IProdutoInterface _produtoInterface;
@@ -16,18 +19,21 @@ namespace LojaProdutosCurso.Controllers
             _produtoInterface = produtoInterface;
             _categoriaInterface = categoriaInterface;
         }
+        [UsuarioLogadoAdm]
         public async Task<IActionResult> Index()
         {
             var produtos = await _produtoInterface.BuscarProdutos();
 
             return View(produtos);
         }
+        [UsuarioLogadoAdm]
         public async Task<IActionResult> Cadastrar()
         {
             ViewBag.Categorias = await _categoriaInterface.BuscarCategorias();
 
             return View();
         }
+        [UsuarioLogadoAdm]
         public async Task<IActionResult> Remover(int id)
         {
            var poroduto =  await _produtoInterface.Remover(id);
@@ -39,7 +45,7 @@ namespace LojaProdutosCurso.Controllers
             var produto = await _produtoInterface.BuscarProdutoPorId(id);
             return View(produto);
         }
-
+        [UsuarioLogadoAdm]
         public async Task<IActionResult> Editar(int id)
         {
             var produto = await _produtoInterface.BuscarProdutoPorId(id);
@@ -61,6 +67,7 @@ namespace LojaProdutosCurso.Controllers
 
 
         [HttpPost]
+        [UsuarioLogadoAdm]
         public async Task<IActionResult> Cadastrar(CriarProdutoDTO criaProdutoDTO,IFormFile foto )
         {
             if (ModelState.IsValid)
@@ -80,6 +87,7 @@ namespace LojaProdutosCurso.Controllers
         }
 
         [HttpPost]
+        [UsuarioLogadoAdm]
         public async Task<IActionResult> Editar(int id, EditarProdutoDTO editarProdutoDTO, IFormFile? foto)
         {
             if (ModelState.IsValid)

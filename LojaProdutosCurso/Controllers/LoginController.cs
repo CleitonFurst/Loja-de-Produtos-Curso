@@ -6,8 +6,6 @@ namespace LojaProdutosCurso.Controllers
 {
     public class LoginController : Controller
     {
-        
-
         public IUsuariointerface _usuariointerface { get; }
         public LoginController(IUsuariointerface usuariointerface)
         {
@@ -25,20 +23,17 @@ namespace LojaProdutosCurso.Controllers
             {
                 var usuario = await _usuariointerface.Login(loginUsuarioDTO);
 
-                if (usuario != null) 
+                if (usuario == null) 
                 {
-                    TempData["Success"] = "Login realizado com sucesso.";
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    TempData["Error"] = "Email ou senha incorretos.";
+                    TempData["MensagemErro"] = "Credenciais inválidas.";
                     return View(loginUsuarioDTO);
                 }
+                TempData["Success"] = "Login realizado com sucesso.";
+                return RedirectToAction("Index", "Home");                
             }
             else
             {
-                TempData["Error"] = "Preencha os campos corretamente.";
+                TempData["MensagemErro"] = "Preencha os campos corretamente.";
                 return View(loginUsuarioDTO);
             }
 

@@ -1,53 +1,102 @@
 ﻿@using LojaProdutosCurso.Models
 @model List<UsuarioModel>
 
+@{
+    ViewData["Title"] = "Gestão de Usuários";
+}
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Início</a></li>
+            <li class="breadcrumb-item active">Usuários</li>
+        </ol>
+    </nav>
 
-        <h2>Listagem de Usuários</h2>
-        <a asp-controller="Usuario" asp-action="Cadastrar" class="btn btn-success">Cadastrar novo usuário</a>
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center text-center text-md-start flex-column flex-md-row gap-3">
+            <div>
+                <h2 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-people me-2 text-primary"></i>Gestão de Usuários
+                </h2>
+                <p class="text-muted small mb-0">Administre as contas e permissões do sistema.</p>
+            </div>
+            <a asp-controller="Usuario" asp-action="Cadastrar" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                <i class="bi bi-person-plus me-2"></i>Novo Usuário
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="registros">
+                    <thead class="table-light text-muted small text-uppercase">
+                        <tr>
+                            <th class="border-0 px-3">Nome / E-mail</th>
+                            <th class="border-0 text-center">Cargo</th>
+                            <th class="border-0 text-center">Estado</th>
+                            <th class="border-0 text-center">Cadastro</th>
+                            <th class="border-0 text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var usuario in Model)
+                            {
+                                <tr>
+                                    <td class="px-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                                <span class="fw-bold">@usuario.Nome.Substring(0, 1).ToUpper()</span>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold d-block text-dark">@usuario.Nome</span>
+                                                <small class="text-muted">@usuario.Email</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill @(usuario.Cargo.ToString() == "Admin" ? "bg-dark" : "bg-light text-dark border") px-3 py-2 fw-medium">
+                                            @usuario.Cargo
+                                        </span>
+                                    </td>
+                                    <td class="text-center text-muted fw-medium">
+                                        @usuario.Endereco.Estado
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="small d-block text-dark">@usuario.DataCadastro.ToString("dd/MM/yyyy")</span>
+                                        <small class="text-muted">às @usuario.DataCadastro.ToString("HH:mm")</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group shadow-sm rounded-pill overflow-hidden">
+                                            <a asp-controller="Usuario" asp-action="Editar" asp-route-id="@usuario.Id" 
+                                               class="btn btn-white btn-sm px-3 border-end" title="Editar">
+                                                <i class="bi bi-pencil-square text-primary"></i>
+                                            </a>
+                                            <a asp-controller="Usuario" asp-action="Excluir" asp-route-id="@usuario.Id" 
+                                               class="btn btn-white btn-sm px-3" title="Excluir">
+                                                <i class="bi bi-trash3 text-danger"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="bi bi-people display-1 opacity-25 d-block mb-3"></i>
+                                        <p class="mb-0">Nenhum usuário encontrado no sistema.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <table class="table table-hover table-bordered" id="registros">
-        <thead class="table-dark">
-            <tr>
-                <th>Cargo</th>
-                <th>Nome</th>
-                <th>Estado</th>
-                <th>E-mail</th>
-                <th>Data de criação</th>
-                <th>Data de alteração</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model == null)
-            {
-                <p>Model está nulo</p>
-            }
-            else
-            {
-                <p>Quantidade de usuários: @Model.Count</p>
-            }
-            @if(Model != null && Model.Count > 0)
-            {
-
-                @foreach (var usuario in Model)
-                {
-                    <tr>
-                        <td>@usuario.Cargo</td>
-                        <td>@usuario.Nome</td>
-                        <td>@usuario.Endereco.Estado</td>
-                        <td>@usuario.Email</td>
-                        <td>@usuario.DataCadastro.ToString("dd/MM/yyyy hh:mm")</td>
-                        <td>@usuario.DataAlteracao.ToString("dd/MM/yyyy hh:mm")</td>
-                        <td>
-                            <a asp-controller="Usuario" asp-action="Editar" asp-route-id="@usuario.Id" class="btn btn-sm btn-info"><i class="bi bi-pencil"></i>Editar</a>
-                            <a asp-controller="Usuario" asp-action="Excluir" asp-route-id="@usuario.Id" class="btn btn-sm btn-danger"><i class="bi bi-x-square"></i>Excluir</a>
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
 </div>

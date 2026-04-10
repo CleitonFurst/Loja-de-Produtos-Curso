@@ -20,7 +20,7 @@ namespace LojaProdutosCurso.Services.Sessao
                 return null;
             }
 
-            return JsonConvert.DeserializeObject<UsuarioModel>(sessaoUsuarioJson);
+            return JsonConvert.DeserializeObject<UsuarioModel>(sessaoUsuarioJson);//tranforma o json em um objeto do tipo UsuarioModel
         }
 
         public void CriarSessao(UsuarioModel usuario)

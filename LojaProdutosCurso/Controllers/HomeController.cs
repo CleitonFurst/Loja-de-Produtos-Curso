@@ -1,12 +1,15 @@
 
+using LojaProdutosCurso.Filtros;
 using LojaProdutosCurso.Models;
 using LojaProdutosCurso.Services.Produto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LojaProdutosCurso.Controllers
-{
+{  
+    [UsuarioLogado]
     public class HomeController : Controller
     {
+     
         private readonly IProdutoInterface _produtoInterface;
 
         public HomeController(IProdutoInterface produtoInterface)

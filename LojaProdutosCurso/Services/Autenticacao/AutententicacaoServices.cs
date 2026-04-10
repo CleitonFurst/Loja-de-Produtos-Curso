@@ -13,7 +13,7 @@ namespace LojaProdutosCurso.Services.Autenticacao
             }
         }
 
-        public bool verificaLogin(string senha, byte[] senhaHash, byte[] senhaSalt)
+        public bool VerificaLogin(string senha, byte[] senhaHash, byte[] senhaSalt)
         {
             using (var hmac = new HMACSHA512(senhaSalt))
             {

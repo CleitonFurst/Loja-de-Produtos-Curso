@@ -152,13 +152,13 @@ namespace LojaProdutosCurso.Services.Usuario
         {
             try
             {
-                var usuarioBanco = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == loginUsuarioDTO.Email);//verifica se o email existe no banco, se não existir retorna null
+                var usuarioBanco = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == loginUsuarioDTO.Email); //verifica se o email existe no banco, se não existir retorna null
 
                 if (usuarioBanco == null)
                 {
-                    throw null;
+                    return null;
                 }
-                if(!_autenticacaoInterface.verificaLogin(loginUsuarioDTO.Senha, usuarioBanco.SenhaHash, usuarioBanco.SenhaSalt))//verifica se a senha digitada é igual a senha do banco, se não for retorna null
+                if(!_autenticacaoInterface.VerificaLogin(loginUsuarioDTO.Senha, usuarioBanco.SenhaHash, usuarioBanco.SenhaSalt))//verifica se a senha digitada é igual a senha do banco, se não for retorna null
                 { 
                     return null;
                 }

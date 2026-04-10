@@ -1,6 +1,7 @@
 ﻿using LojaProdutosCurso.Enums;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.VisualBasic;
+using System.Text.Json.Serialization;
 
 namespace LojaProdutosCurso.Models
 {
@@ -15,7 +16,7 @@ namespace LojaProdutosCurso.Models
         public DateTime DataCadastro { get; set; } = DateTime.Now;
         public DateTime DataAlteracao { get; set; }= DateTime.Now;
 
-        [ValidateNever]
+        [ValidateNever]       
         public EnderecoModel Endereco { get; set; }
     }
 }

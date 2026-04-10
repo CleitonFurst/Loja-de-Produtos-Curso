@@ -1,16 +1,72 @@
 ﻿@using LojaProdutosCurso.DTO.Login
 @model LoginUsuarioDTO
 
-<div class="container">
-    <form asp-controller="Login" asp-action="Login" method="post">
-        <div class=""mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" asp-for="Email" required>
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="bi bi-person-lock fs-1"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark">Acesse sua conta</h2>
+                        <p class="text-muted small">Bem-vindo de volta! Por favor, insira seus dados.</p>
+                    </div>
+
+                    @if (TempData["MensagemErro"] != null)
+                    {
+                        <div class="alert alert-danger border-0 shadow-sm mb-4 small" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["MensagemErro"]
+                        </div>
+                    }
+
+                    <form asp-controller="Login" asp-action="Login" method="post">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark small text-uppercase">E-mail</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-2 border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control form-control-lg bg-light border-2 border-start-0 shadow-none" 
+                                       asp-for="Email" placeholder="seu@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label fw-bold text-dark small text-uppercase">Senha</label>
+                                <a href="#" class="text-primary small text-decoration-none fw-bold">Esqueceu?</a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-2 border-end-0 text-muted"><i class="bi bi-key"></i></span>
+                                <input type="password" class="form-control form-control-lg bg-light border-2 border-start-0 shadow-none" 
+                                       asp-for="Senha" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember">
+                            <label class="form-check-label small text-muted" for="remember">Lembrar de mim</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm mb-4 fw-bold">
+                            Entrar no Sistema
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <p class="text-muted small mb-0">Não tem uma conta? <a asp-controller="Usuario" asp-action="Cadastrar" class="text-primary text-decoration-none fw-bold">Cadastre-se</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a asp-controller="Home" asp-action="Index" class="text-muted small text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i> Voltar para a loja
+                </a>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Senha</label>
-            <input type="password" class="form-control" asp-for="Senha" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Entrar</button>    
-    </form>
+    </div>
 </div>

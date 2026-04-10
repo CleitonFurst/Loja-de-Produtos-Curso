@@ -208,51 +208,53 @@
                                      class="card-img-top produto-imagem"
                                      alt="@produto.Nome - @produto.Marca"
                                      loading="lazy"
-                                     onerror="this.src='/imagens/produto-sem-imagem.png'" />
+                                     onerror="this.src='https://placehold.co/600x600?text=Produto+Sem+Imagem'" />
                                 <div class="produto-overlay">
-                                    <a class="btn btn-light btn-sm rounded-circle quick-view"
+                                    <a class="btn btn-light btn-sm rounded-circle shadow-sm"
                                        asp-action="Detalhes"
                                        asp-controller="Produto"
                                        asp-route-id="@produto.Id"
-                                       title="Visualização rápida">
-                                        <i class="bi bi-eye"></i>
+                                       title="Ver detalhes">
+                                        <i class="bi bi-eye-fill"></i>
                                     </a>
                                 </div>
                             </div>
 
                             <!-- Corpo do Card -->
-                            <div class="card-body d-flex flex-column text-center">
-                                <h5 class="card-title produto-nome" title="@produto.Nome">@produto.Nome</h5>
-                                <p class="card-text text-muted mb-2 produto-marca">
-                                    <i class="bi bi-award me-1"></i>@produto.Marca
-                                </p>
-
-                                <!-- Avaliação (exemplo estático) -->
-                                <div class="rating mb-2">
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-half text-warning"></i>
-                                    <span class="text-muted small ms-1">(4.5)</span>
+                            <div class="card-body d-flex flex-column p-4">
+                                <div class="mb-1">
+                                    <small class="text-uppercase fw-bold text-muted small" style="letter-spacing: 0.5px;">@produto.Marca</small>
+                                </div>
+                                <h5 class="card-title fw-bold mb-3 produto-nome text-dark" title="@produto.Nome">@produto.Nome</h5>
+                                
+                                <!-- Avaliação -->
+                                <div class="rating mb-3 small">
+                                    <div class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-half"></i>
+                                        <span class="text-muted ms-1">(4.8)</span>
+                                    </div>
                                 </div>
 
                                 <!-- Preço -->
-                                <div class="produto-preco mb-3 mt-auto">
-                                    <span class="preco-atual fs-4 fw-bold text-success">
-                                        @produto.Valor.ToString("C", CultureInfo.GetCultureInfo("pt-BR"))
-                                    </span>
-                                    <small class="text-muted d-block">ou 3x sem juros</small>
+                                <div class="mt-auto pt-3 border-top">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <span class="text-success fw-bolder fs-4">
+                                                @produto.Valor.ToString("C", CultureInfo.GetCultureInfo("pt-BR"))
+                                            </span>
+                                        </div>
+                                        <a class="btn btn-dark btn-sm rounded-pill px-3"
+                                           asp-action="Detalhes"
+                                           asp-controller="Produto"
+                                           asp-route-id="@produto.Id">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </a>
+                                    </div>
                                 </div>
-
-                                <!-- Botão de Detalhes -->
-                                <a class="btn btn-primary w-100 btn-detalhes"
-                                   asp-action="Detalhes"
-                                   asp-controller="Produto"
-                                   asp-route-id="@produto.Id"
-                                   aria-label="Ver detalhes de @produto.Nome">
-                                    <i class="bi bi-cart-plus me-2"></i>Ver Detalhes
-                                </a>
                             </div>
                         </article>
                     </div>

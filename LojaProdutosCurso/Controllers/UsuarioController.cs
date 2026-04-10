@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LojaProdutosCurso.DTO.Endereco;
 using LojaProdutosCurso.DTO.Usuario;
+using LojaProdutosCurso.Filtros;
 using LojaProdutosCurso.Services.Usuario;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace LojaProdutosCurso.Controllers
 {
+    [UsuarioLogado]
+    [UsuarioLogadoAdm]
     public class UsuarioController : Controller
     {
         private readonly IUsuariointerface _usuarioInterface;

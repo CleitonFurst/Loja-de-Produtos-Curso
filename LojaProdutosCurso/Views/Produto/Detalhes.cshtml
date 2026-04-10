@@ -1,21 +1,95 @@
 ﻿@using LojaProdutosCurso.Models
 @model ProdutoModel
 
-<div class="container my-5">
-    <div class="p-5 text-center bg-body-tertiary rounded-3">
-        <img src="~/imagem/@Model.Foto" style="width:350px; height:350px;" />
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
 
-        <h3 class="text-body-emphasis">@Model.Nome</h3>
-        <p class="col-lg-8 mx-auto fs-5 text-muted">
-            @Model.Marca - @Model.Categoria.Nome
-        </p>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item" style="font-size:45px;"> R$ @Model.Valor.ToString("F")</li>
-        </ul>
-        <form method="post" asp-action="BaixarEstoque" asp-controller="Estoque" asp-route-id="@Model.Id" class="mt-5">
-            <button type="submit" class="btn btn-warning w-50">Comprar</button>
-        </form>
-        <a class="btn btn-info w-50 mt-3" asp-controller="Home" asp-action="Index"><i class="bi bi-arrow-left-circle mx-2"></i>Voltar</a>
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-5">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Início</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index">Produtos</a></li>
+            <li class="breadcrumb-item active">@Model.Nome</li>
+        </ol>
+    </nav>
 
+    <div class="row g-5">
+        <!-- Coluna da Imagem -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                <div class="p-4 p-lg-5 text-center">
+                    <img src="~/imagem/@(string.IsNullOrEmpty(Model.Foto) ? "sem-foto.png" : Model.Foto)" 
+                         class="img-fluid rounded-3 shadow-sm" 
+                         style="max-height: 500px; width: auto;"
+                         alt="@Model.Nome"
+                         onerror="this.src='https://placehold.co/600x600?text=Sem+Imagem'"/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna das Informações -->
+        <div class="col-md-6">
+            <div class="product-info ps-md-4">
+                <div class="mb-2">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold small text-uppercase">
+                        <i class="bi bi-tag-fill me-1"></i>@Model.Categoria.Nome
+                    </span>
+                </div>
+                
+                <h1 class="display-5 fw-bold text-dark mb-2">@Model.Nome</h1>
+                <p class="text-muted fs-5 mb-4">
+                    <i class="bi bi-award me-2"></i>Marca: <span class="fw-bold">@Model.Marca</span>
+                </p>
+
+                <div class="price-section py-4 border-top border-bottom mb-4">
+                    <div class="d-flex align-items-baseline gap-3">
+                        <span class="display-4 fw-extrabold text-success">@Model.Valor.ToString("C")</span>
+                        <span class="text-muted text-decoration-line-through">@((Model.Valor * 1.15m).ToString("C"))</span>
+                    </div>
+                    <p class="text-muted mb-0"><i class="bi bi-credit-card me-2"></i>Em até 10x sem juros no cartão</p>
+                </div>
+
+                <div class="stock-info mb-5">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3 p-3 bg-light rounded-3">
+                            <i class="bi bi-box-seam fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <span class="d-block fw-bold text-dark">Disponibilidade</span>
+                            <span class="text-@(Model.QuantidadeEstoque > 0 ? "success" : "danger") fw-medium">
+                                @(Model.QuantidadeEstoque > 0 ? $"Em estoque ({Model.QuantidadeEstoque} unidades)" : "Indisponível")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <form method="post" asp-action="BaixarEstoque" asp-controller="Estoque" asp-route-id="@Model.Id">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill py-3 shadow fw-bold @(Model.QuantidadeEstoque <= 0 ? "disabled" : "")">
+                            <i class="bi bi-cart-plus-fill me-2"></i>Adicionar ao Carrinho
+                        </button>
+                    </form>
+                    <a class="btn btn-outline-dark btn-lg rounded-pill py-3 fw-bold" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-arrow-left me-2"></i>Continuar Comprando
+                    </a>
+                </div>
+
+                <div class="benefits-grid row g-3 mt-5 border-top pt-5">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center small text-muted">
+                            <i class="bi bi-truck fs-4 me-3 text-primary"></i>
+                            <span>Frete grátis para todo Brasil</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center small text-muted">
+                            <i class="bi bi-shield-check fs-4 me-3 text-primary"></i>
+                            <span>Compra 100% garantida</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
