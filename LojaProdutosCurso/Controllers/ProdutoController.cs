@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LojaProdutosCurso.Controllers
 {
-    [UsuarioLogado]
-    
+    [UsuarioLogado]    
     public class ProdutoController : Controller
     {
         private readonly IProdutoInterface _produtoInterface;

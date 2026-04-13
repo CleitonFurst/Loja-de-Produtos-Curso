@@ -1,0 +1,35 @@
+﻿@using LojaProdutosCurso.Enums
+@using LojaProdutosCurso.Models
+@model UsuarioModel
+
+<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+    <li class="nav-item mx-lg-2">
+        <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">
+            <i class="bi bi-house-door me-1"></i>Início
+        </a>
+    </li>
+
+    @if(Model.Cargo == CargoEnum.Administrador)
+    {
+        <li class="nav-item mx-lg-2">
+            <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Produto" ? "active" : "")" asp-area="" asp-controller="Produto" asp-action="Index">
+                <i class="bi bi-bag me-1"></i>Gerenciar Produtos
+            </a>
+        </li>
+        <li class="nav-item mx-lg-2">
+            <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Estoque" ? "active" : "")" asp-area="" asp-controller="Estoque" asp-action="Index">
+                <i class="bi bi-list-ul me-1"></i>Listagem Completa
+            </a>
+        </li>
+        <li class="nav-item mx-lg-2">
+            <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")" asp-area="" asp-controller="Usuario" asp-action="Index">
+                <i class="bi bi-people me-1"></i>Usuários
+            </a>
+        </li>
+    }   
+    <li class="nav-item mx-lg-2">
+        <a class="nav-link px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")" asp-area="" asp-controller="Login" asp-action="Sair">
+            <i class="bi bi-box-arrow-right me-1"></i>Sair
+        </a>
+    </li>
+</ul>
